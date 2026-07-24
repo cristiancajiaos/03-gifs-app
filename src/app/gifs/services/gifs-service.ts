@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service, signal } from '@angular/core';
-import type { GiphyResponse } from '../intefaces/giphy.interfaces';
+import type { GiphyItem, GiphyResponse } from '../intefaces/giphy.interfaces';
 import { environment } from '@environments/environment';
 import { Gif } from '../intefaces/gif.interface';
 import { GifMapper } from '../mapper/gif.mapper';
+import { map, tap } from 'rxjs';
 
 @Service()
 export class GifsService {
@@ -36,5 +37,19 @@ export class GifsService {
         this.trendingGifsLoading.set(false);
       }
     })
+  }
+
+  public searchGifs(query: string) {
+    return this.http.get<GiphyResponse>(`${environment.giphyUrl}/gifs/search`, {
+      params: {
+        api_key: environment.giphyApiKey,
+        q: query,
+        limit: 25
+      }
+    }).pipe(
+      map(({data}) => data),
+      map((items) => GifMapper.mapGiphyItemsToGifArray(items))
+      //TODO: Historial
+    );
   }
 }
