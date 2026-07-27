@@ -11,7 +11,6 @@ const GIF_KEY = 'gifs';
 const loadFromLocalStorage = () => {
   const gifsFromLocalStorage = localStorage.getItem(GIF_KEY) ?? '{}';
   const gifs = JSON.parse(gifsFromLocalStorage);
-  console.log(gifs);
   return gifs;
 }
 @Service()
@@ -27,7 +26,6 @@ export class GifsService {
     for (let i = 0; i < this.trendingGifs().length; i += 3) {
       groups.push(this.trendingGifs().slice(i, i+3))
     }
-    console.log(groups);
     return groups;
   });
 
@@ -55,10 +53,9 @@ export class GifsService {
         this.trendingGifs.set(gifs);
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
       },
       complete: () => {
-        console.log('Observable completed');
         this.trendingGifsLoading.set(false);
       }
     })
